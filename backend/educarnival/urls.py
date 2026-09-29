@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/competency/', include('apps.competency.urls')),
     path('api/evidence/', include('apps.evidence.urls')),
     path('api/labs/', include('apps.labs.urls')),
+    path('api/users/<str:user_id>/competency-card/', __import__('apps.competency.views', fromlist=['UserCompetencyCardView']).UserCompetencyCardView.as_view(), name='user-competency-card'),
     
     # ORBIS Competency Platform
     path('api/core/', include('core.urls')),

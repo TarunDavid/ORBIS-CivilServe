@@ -21,6 +21,7 @@ import TeacherActivity from './pages/teacher/TeacherActivity';
 // ORBIS MEASURE — Auth & Dashboard (Dev A)
 import LoginPage from './features/auth/LoginPage';
 import OfficialDashboard from './features/measure/OfficialDashboard';
+import CompetencyCardPage from './features/measure/CompetencyCardPage';
 import AuthProtectedRoute from './features/auth/ProtectedRoute';
 
 /** Pages where the global header should NOT appear */
@@ -64,6 +65,14 @@ function AppLayout() {
             element={
               <AuthProtectedRoute>
                 <OfficialDashboard />
+              </AuthProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/measure/competency-card" 
+            element={
+              <AuthProtectedRoute>
+                <CompetencyCardPage />
               </AuthProtectedRoute>
             } 
           />

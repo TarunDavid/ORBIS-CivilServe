@@ -14,9 +14,11 @@ import {
   FlaskConical,
   Code2,
   Database,
-  FileText
+  FileText,
+  Award
 } from 'lucide-react';
 import VirtualLabModal from './VirtualLabModal';
+import CompetencyCardModal from './CompetencyCardModal';
 
 export default function OfficialDashboard() {
   const { user, logout } = useAuth();
@@ -26,6 +28,7 @@ export default function OfficialDashboard() {
   const [loading, setLoading] = useState(true);
   const [activeLabReq, setActiveLabReq] = useState<RoleRequirement | null>(null);
   const [selectedLab, setSelectedLab] = useState<CompetencyLab | null>(null);
+  const [showCompetencyCard, setShowCompetencyCard] = useState(false);
 
   async function loadData() {
     try {
@@ -79,13 +82,22 @@ export default function OfficialDashboard() {
               Demonstrated Competency & Experiential Assessment Engine
             </p>
           </div>
-          <button 
-            onClick={handleLogout}
-            className="clay-btn bg-surface text-structural px-4 py-2 text-sm flex items-center gap-2 border-2 border-structural hover:bg-white transition-all cursor-pointer"
-          >
-            <LogOut size={16} />
-            Sign Out
-          </button>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setShowCompetencyCard(true)}
+              className="clay-btn bg-white hover:bg-gold/10 text-structural px-4 py-2 text-sm font-bold flex items-center gap-2 border-2 border-gold rounded-xl shadow-sm transition-all cursor-pointer"
+            >
+              <Award size={16} className="text-gold-dark" />
+              Digital Skill Passport
+            </button>
+            <button 
+              onClick={handleLogout}
+              className="clay-btn bg-surface text-structural px-4 py-2 text-sm flex items-center gap-2 border-2 border-structural hover:bg-white transition-all cursor-pointer"
+            >
+              <LogOut size={16} />
+              Sign Out
+            </button>
+          </div>
         </header>
 
         {/* Top Info Cards */}
@@ -317,6 +329,13 @@ export default function OfficialDashboard() {
           onComplete={() => {
             loadData();
           }}
+        />
+      )}
+
+      {/* Official Competency Card & Digital Skill Passport Modal */}
+      {showCompetencyCard && (
+        <CompetencyCardModal
+          onClose={() => setShowCompetencyCard(false)}
         />
       )}
     </div>

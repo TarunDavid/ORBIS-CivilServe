@@ -59,3 +59,62 @@ class RoleRequirementViewSet(viewsets.ReadOnlyModelViewSet):
             item['current_proficiency'] = score_map.get(competency_id, 0)
             
         return Response(data)
+
+
+from rest_framework.views import APIView
+from apps.accounts.models import OfficialProfile
+from .services import generate_competency_card
+from django.db import models
+
+class CompetencyCardView(APIView):
+    """
+    Returns the official competency card & digital skill passport.
+    Supports GET /api/competency/card/me/ and GET /api/competency/card/<official_id>/
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, official_id=None):
+        if official_id:
+            try:
+                official = OfficialProfile.objects.select_related('user', 'department', 'job_role').get(id=official_id)
+            except OfficialProfile.DoesNotExist:
+                return Response({"detail": "Official profile not found."}, status=404)
+        else:
+            user = request.user
+            if not hasattr(user, 'orbis_profile'):
+                return Response({"detail": "No official profile associated with current account."}, status=400)
+            official = user.orbis_profile
+
+        card_data = generate_competency_card(official)
+        return Response(card_data)
+
+
+class UserCompetencyCardView(APIView):
+    """
+    Contract endpoint: GET /api/users/<id>/competency-card/ or GET /api/users/me/competency-card/
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id=None):
+        if not user_id or str(user_id).lower() == 'me':
+            official = getattr(request.user, 'orbis_profile', None)
+        else:
+            official = None
+            import uuid
+            try:
+                uuid_val = uuid.UUID(str(user_id))
+                official = OfficialProfile.objects.filter(id=uuid_val).first()
+            except (ValueError, TypeError):
+                pass
+
+            if not official:
+                if str(user_id).isdigit():
+                    official = OfficialProfile.objects.filter(user__id=int(user_id)).first()
+                else:
+                    official = OfficialProfile.objects.filter(user__username=user_id).first()
+
+        if not official:
+            return Response({"detail": "Official profile not found."}, status=404)
+
+        card_data = generate_competency_card(official)
+        return Response(card_data)
