@@ -1,32 +1,54 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
-import { fetchMyCompetencyRequirements, RoleRequirement } from './competencyApi';
-import { LogOut, BarChart3, UserCircle, Briefcase, AlertCircle, TrendingUp } from 'lucide-react';
+import { fetchMyCompetencyRequirements, type RoleRequirement } from './competencyApi';
+import { submitEvidence } from './evidenceApi';
+import { LogOut, BarChart3, UserCircle, Briefcase, AlertCircle, TrendingUp, Play } from 'lucide-react';
 
 export default function OfficialDashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [requirements, setRequirements] = useState<RoleRequirement[]>([]);
   const [loading, setLoading] = useState(true);
+  const [simulating, setSimulating] = useState<string | null>(null);
+
+  async function loadData() {
+    try {
+      setLoading(true);
+      const data = await fetchMyCompetencyRequirements();
+      setRequirements(data);
+    } catch (err) {
+      console.error("Failed to fetch competency requirements", err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await fetchMyCompetencyRequirements();
-        setRequirements(data);
-      } catch (err) {
-        console.error("Failed to fetch competency requirements", err);
-      } finally {
-        setLoading(false);
-      }
-    }
     loadData();
   }, []);
 
   const handleLogout = () => {
     logout();
     navigate('/auth/login');
+  };
+
+  const handleSimulateLab = async (req: RoleRequirement) => {
+    try {
+      setSimulating(req.id);
+      await submitEvidence({
+        competency_id: req.competency.id,
+        source_type: 'competency_lab',
+        source_reference: 'demo-lab-001',
+        score_raw: Math.floor(Math.random() * 40) + 60, // 60-100 random score
+        explanation: 'Simulated lab execution via Dashboard'
+      });
+      await loadData();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSimulating(null);
+    }
   };
 
   const criticalGaps = requirements.filter(r => (r.target_proficiency - r.current_proficiency) > 2);
@@ -80,7 +102,7 @@ export default function OfficialDashboard() {
               <h3 className="font-grotesk font-bold text-structural">Competency Gap</h3>
             </div>
             <p className="font-jakarta text-lg">
-              {loading ? 'Analyzing...' : `${totalGaps} Areas for Improvement`}
+              {loading ? 'Analyzing...' : totalGaps === 0 ? 'No Gaps Found' : `${totalGaps} Areas for Improvement`}
             </p>
           </div>
         </div>
@@ -100,7 +122,7 @@ export default function OfficialDashboard() {
             )}
           </div>
 
-          {loading ? (
+          {loading && requirements.length === 0 ? (
             <div className="animate-pulse space-y-6">
               {[1, 2, 3, 4].map(i => (
                 <div key={i} className="h-12 bg-surface rounded w-full"></div>
@@ -114,7 +136,7 @@ export default function OfficialDashboard() {
                 const isCritical = (req.target_proficiency - req.current_proficiency) > 2;
 
                 return (
-                  <div key={req.id} className="relative">
+                  <div key={req.id} className="relative group">
                     <div className="flex justify-between items-end mb-2">
                       <div>
                         <h4 className="font-bold text-structural text-lg flex items-center gap-2">
@@ -125,9 +147,19 @@ export default function OfficialDashboard() {
                           {req.competency.code} • {req.competency.category.name}
                         </span>
                       </div>
-                      <div className="text-right">
-                        <span className="text-sm text-on-surface-variant mr-3">Current: <span className="font-bold text-structural">L{req.current_proficiency}</span></span>
-                        <span className="text-sm text-cobalt font-bold">Target: L{req.target_proficiency}</span>
+                      <div className="text-right flex items-center gap-4">
+                        <button
+                          onClick={() => handleSimulateLab(req)}
+                          disabled={simulating === req.id}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-cobalt text-white px-2 py-1 rounded flex items-center gap-1 disabled:opacity-50"
+                        >
+                          <Play size={12} />
+                          Simulate Lab
+                        </button>
+                        <div>
+                          <span className="text-sm text-on-surface-variant mr-3">Current: <span className="font-bold text-structural">L{req.current_proficiency}</span></span>
+                          <span className="text-sm text-cobalt font-bold">Target: L{req.target_proficiency}</span>
+                        </div>
                       </div>
                     </div>
                     
@@ -161,13 +193,6 @@ export default function OfficialDashboard() {
               })}
             </div>
           )}
-        </div>
-
-        <div className="clay-card bg-surface p-8 text-center border-2 border-dashed border-structural/20">
-          <h2 className="font-syne text-2xl font-bold text-structural mb-4">Phase 3: Diagnostic Assessments</h2>
-          <p className="text-on-surface-variant max-w-lg mx-auto">
-            Your current proficiency levels are showing as "L0". In the next phase, we will implement the assessment engine to gather evidence and accurately measure these competencies!
-          </p>
         </div>
 
       </div>
