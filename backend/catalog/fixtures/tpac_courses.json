@@ -1,0 +1,26 @@
+[
+  {
+    "id": "tpac-101",
+    "title": "Python for Data Analysis",
+    "description": "Using pandas and numpy for statistical testing and automation.",
+    "duration_minutes": 180,
+    "url": "https://tpac.gov.in/course/101",
+    "competencies": ["Python for Statistics", "Data Cleaning & Validation"]
+  },
+  {
+    "id": "tpac-102",
+    "title": "Advanced SQL for Demographics",
+    "description": "Window functions and aggregations on large statistical databases.",
+    "duration_minutes": 150,
+    "url": "https://tpac.gov.in/course/102",
+    "competencies": ["SQL for Data Analysis"]
+  },
+  {
+    "id": "tpac-103",
+    "title": "Data Visualization with PowerBI & Plotly",
+    "description": "Creating effective dashboards and reports for official statistics.",
+    "duration_minutes": 120,
+    "url": "https://tpac.gov.in/course/103",
+    "competencies": ["Data Visualisation"]
+  }
+]

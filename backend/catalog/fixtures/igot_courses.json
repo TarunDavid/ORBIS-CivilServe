@@ -1,0 +1,26 @@
+[
+  {
+    "id": "igot-001",
+    "title": "Introduction to Survey Design",
+    "description": "Learn the basics of designing representative surveys and questionnaire construction.",
+    "duration_minutes": 120,
+    "url": "https://igot.karmayogi.gov.in/courses/igot-001",
+    "competencies": ["Survey Design", "Sampling Techniques"]
+  },
+  {
+    "id": "igot-002",
+    "title": "Official Statistics in India",
+    "description": "Overview of the NSS/MoSPI procedures, survey rounds, and methodology.",
+    "duration_minutes": 240,
+    "url": "https://igot.karmayogi.gov.in/courses/igot-002",
+    "competencies": ["NSS/MoSPI Standards & Procedures", "Official Statistics Dissemination"]
+  },
+  {
+    "id": "igot-003",
+    "title": "Data Collection Fieldwork Best Practices",
+    "description": "CAPI and field supervision guidelines for data quality.",
+    "duration_minutes": 90,
+    "url": "https://igot.karmayogi.gov.in/courses/igot-003",
+    "competencies": ["Data Collection & Fieldwork"]
+  }
+]

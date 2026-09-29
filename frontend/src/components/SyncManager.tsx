@@ -163,9 +163,9 @@ const SyncManager = ({ compact = false }: SyncManagerProps) => {
   }, []);
 
   // Progress percentage
-  const filePercent = progress.totalFiles > 0
-    ? Math.round((progress.completedFiles / progress.totalFiles) * 100)
-    : 0;
+  // const filePercent = progress.totalFiles > 0
+  //   ? Math.round((progress.completedFiles / progress.totalFiles) * 100)
+  //   : 0;
   const bytePercent = progress.bytesTotal > 0
     ? Math.round((progress.bytesDownloaded / progress.bytesTotal) * 100)
     : 0;

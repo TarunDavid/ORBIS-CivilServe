@@ -14,6 +14,7 @@ class FocusAlarmManager {
   private isAlarming = false;
   private audioContext: AudioContext | null = null;
   private currentUtterance: SpeechSynthesisUtterance | null = null;
+  public get _preventGc() { return this.currentUtterance; }
   private cycleTimeoutId: number | null = null;
   private watchdogTimeoutId: number | null = null;
   private currentMessage = '';

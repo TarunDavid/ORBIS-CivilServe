@@ -51,6 +51,15 @@ INSTALLED_APPS = [
     "apps.assessments",
     "apps.labs",
     "apps.evidence",
+    # ORBIS Competency Platform apps
+    "core",
+    "catalog",
+    "pathways",
+    "content",
+    "assistant",
+    "analytics",
+    "virtual_lab",
+    "edge",
 ]
 
 MIDDLEWARE = [
