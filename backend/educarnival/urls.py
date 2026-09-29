@@ -29,6 +29,7 @@ urlpatterns = [
         path('', __import__('apps.accounts.views', fromlist=['me_view']).me_view, name='api-me'),
     ])),
     path('api/accounts/', include('apps.accounts.urls')),
+    path('api/competency/', include('apps.competency.urls')),
     
     # ORBIS Competency Platform
     path('api/core/', include('core.urls')),
