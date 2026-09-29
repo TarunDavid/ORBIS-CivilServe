@@ -35,34 +35,56 @@ class LabSessionViewSet(viewsets.ModelViewSet):
         serializer.save(official=self.request.user.orbis_profile)
 
     @action(detail=True, methods=['post'])
-    def submit(self, request, pk=None):
+    def step(self, request, pk=None):
         """
-        Receives user code/text, invokes LLM evaluator, and creates Evidence.
+        Saves intermediate session progress (e.g. stage transition in crisis simulation or flagged anomaly in detective).
         """
         session = self.get_object()
-        
         if session.status == 'completed':
             return Response({"error": "This lab session is already completed."}, status=status.HTTP_400_BAD_REQUEST)
-            
-        user_input = request.data.get('user_input', '')
-        
+
+        session_state = request.data.get('session_state')
+        if session_state is not None:
+            session.session_state = session_state
+
+        user_input = request.data.get('user_input')
+        if user_input is not None:
+            session.user_input = user_input
+
+        session.save()
+        return Response(self.get_serializer(session).data)
+
+    @action(detail=True, methods=['post'])
+    def submit(self, request, pk=None):
+        """
+        Receives user code/text and session_state, invokes rubric evaluator, and records evidence.
+        """
+        session = self.get_object()
+
+        if session.status == 'completed':
+            return Response({"error": "This lab session is already completed."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_input = request.data.get('user_input', session.user_input)
+        session_state = request.data.get('session_state', session.session_state)
+
         # 1. Update session to Evaluating
         session.user_input = user_input
+        session.session_state = session_state
         session.status = 'evaluating'
         session.save()
-        
-        # 2. Call the LLM Evaluation Agent
+
+        # 2. Call the Domain Rubric Evaluator
         evaluation = evaluate_lab_submission(session)
         score_raw = evaluation['score']
         feedback = evaluation['feedback']
-        
+
         # 3. Save evaluation results
         session.llm_score_raw = score_raw
         session.llm_feedback = feedback
         session.status = 'completed'
         session.completed_at = timezone.now()
         session.save()
-        
+
         # 4. Record the Evidence in the ORBIS Measurement pipeline!
         record_evidence(
             official=session.official,
@@ -72,5 +94,6 @@ class LabSessionViewSet(viewsets.ModelViewSet):
             explanation=feedback,
             source_reference=str(session.id)
         )
-        
+
         return Response(self.get_serializer(session).data)
+

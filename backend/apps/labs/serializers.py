@@ -7,7 +7,7 @@ class CompetencyLabSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CompetencyLab
-        fields = ['id', 'competency', 'title', 'description', 'environment_type', 'is_active']
+        fields = ['id', 'competency', 'title', 'description', 'environment_type', 'scenario_data', 'is_active']
 
 
 class LabSessionSerializer(serializers.ModelSerializer):
@@ -18,4 +18,4 @@ class LabSessionSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = LabSession
-        fields = ['id', 'lab', 'lab_id', 'user_input', 'llm_score_raw', 'llm_feedback', 'status', 'created_at', 'completed_at']
+        fields = ['id', 'lab', 'lab_id', 'user_input', 'session_state', 'llm_score_raw', 'llm_feedback', 'status', 'created_at', 'completed_at']
