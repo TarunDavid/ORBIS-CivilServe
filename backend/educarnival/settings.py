@@ -42,6 +42,15 @@ INSTALLED_APPS = [
     "corsheaders",
     "api",
     "ai_engine",
+    # ORBIS Competency Platform apps
+    "core",
+    "catalog",
+    "pathways",
+    "content",
+    "assistant",
+    "analytics",
+    "virtual_lab",
+    "edge",
 ]
 
 MIDDLEWARE = [

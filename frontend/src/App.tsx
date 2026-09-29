@@ -22,7 +22,20 @@ import TeacherActivity from './pages/teacher/TeacherActivity';
 const NO_HEADER_PATHS = ['/', '/register', '/teacher'];
 
 /** Teacher portal paths (use TeacherHeader, not student Header) */
-const TEACHER_PATHS = ['/teacher/'];
+// const TEACHER_PATHS = ['/teacher/'];
+
+import { Suspense, lazy } from 'react';
+import ProtectedRoute from './components/ProtectedRoute';
+
+// Lazy-loaded ORBIS feature modules
+const CatalogIndex = lazy(() => import('./features/catalog/pages/Index'));
+const PathwaysIndex = lazy(() => import('./features/pathways/pages/Index'));
+const ContentStudioIndex = lazy(() => import('./features/content-studio/pages/Index'));
+const AssistantIndex = lazy(() => import('./features/assistant/pages/Index'));
+const DashboardLearnerIndex = lazy(() => import('./features/analytics/pages/Dashboard'));
+const DashboardAdminIndex = lazy(() => import('./features/dashboard-admin/pages/Index'));
+const VirtualLabIndex = lazy(() => import('./features/virtual-lab/pages/Index'));
+const EdgeIndex = lazy(() => import('./features/edge/pages/Index'));
 
 function AppLayout() {
   const location = useLocation();
@@ -32,28 +45,40 @@ function AppLayout() {
   return (
     <div className="min-h-screen bg-canvas font-jakarta">
       {showHeader && <Header />}
-      <Routes>
-        {/* Student Routes */}
-        <Route path="/" element={<SelectProfile />} />
-        <Route path="/register" element={<Registration />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/subjects/:subjectId/chapters" element={<ChapterList />} />
-        <Route path="/chapters/:chapterId" element={<ChapterContent />} />
-        <Route path="/chapters/:chapterId/flashcards" element={<FlashcardScreen />} />
-        <Route path="/chapters/:chapterId/formulas" element={<FormulaSheetScreen />} />
-        <Route path="/chapters/:chapterId/quiz" element={<QuizScreen />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/progress" element={<ProgressDashboard />} />
+      <Suspense fallback={<div className="p-8">Loading module...</div>}>
+        <Routes>
+          {/* ORBIS Feature Modules (New) */}
+          <Route path="/catalog/*" element={<ProtectedRoute allowedRoles={['learner', 'trainer', 'admin']}><CatalogIndex /></ProtectedRoute>} />
+          <Route path="/pathways/*" element={<ProtectedRoute allowedRoles={['learner', 'trainer', 'admin']}><PathwaysIndex /></ProtectedRoute>} />
+          <Route path="/content-studio/*" element={<ProtectedRoute allowedRoles={['trainer', 'admin']}><ContentStudioIndex /></ProtectedRoute>} />
+          <Route path="/assistant/*" element={<ProtectedRoute allowedRoles={['learner', 'trainer', 'admin']}><AssistantIndex /></ProtectedRoute>} />
+          <Route path="/dashboard-learner/*" element={<ProtectedRoute allowedRoles={['learner', 'trainer', 'admin']}><DashboardLearnerIndex /></ProtectedRoute>} />
+          <Route path="/dashboard-admin/*" element={<ProtectedRoute allowedRoles={['admin']}><DashboardAdminIndex /></ProtectedRoute>} />
+          <Route path="/virtual-lab/*" element={<ProtectedRoute allowedRoles={['learner', 'trainer', 'admin']}><VirtualLabIndex /></ProtectedRoute>} />
+          <Route path="/edge/*" element={<ProtectedRoute allowedRoles={['learner', 'trainer', 'admin']}><EdgeIndex /></ProtectedRoute>} />
 
-        {/* Teacher Portal Routes */}
-        <Route path="/teacher" element={<TeacherLogin />} />
-        <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
-        <Route path="/teacher/content/upload" element={<ContentUpload />} />
-        <Route path="/teacher/content" element={<ContentList />} />
-        <Route path="/teacher/activity" element={<TeacherActivity />} />
+          {/* Legacy Student Routes */}
+          <Route path="/" element={<SelectProfile />} />
+          <Route path="/register" element={<Registration />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/subjects/:subjectId/chapters" element={<ChapterList />} />
+          <Route path="/chapters/:chapterId" element={<ChapterContent />} />
+          <Route path="/chapters/:chapterId/flashcards" element={<FlashcardScreen />} />
+          <Route path="/chapters/:chapterId/formulas" element={<FormulaSheetScreen />} />
+          <Route path="/chapters/:chapterId/quiz" element={<QuizScreen />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/progress" element={<ProgressDashboard />} />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          {/* Legacy Teacher Portal Routes */}
+          <Route path="/teacher" element={<TeacherLogin />} />
+          <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+          <Route path="/teacher/content/upload" element={<ContentUpload />} />
+          <Route path="/teacher/content" element={<ContentList />} />
+          <Route path="/teacher/activity" element={<TeacherActivity />} />
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </div>
   );
 }

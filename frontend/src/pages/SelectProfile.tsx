@@ -41,7 +41,7 @@ const SelectProfile = () => {
       localStorage.removeItem('student_profile_picture');
     }
     localStorage.setItem('currentStudent', JSON.stringify(profile));
-    navigate('/dashboard');
+    navigate('/dashboard-learner');
   };
 
   return (

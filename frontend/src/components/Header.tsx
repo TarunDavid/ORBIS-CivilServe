@@ -107,13 +107,24 @@ const Header = () => {
         </div>
 
         {/* Right: Actions + Avatar */}
-        <div className="header-right">
+        <div className="header-right flex items-center gap-2">
+          {/* Main Navigation */}
+          <nav className="hidden lg:flex items-center gap-1 mr-4">
+            <button onClick={() => navigate('/dashboard-learner')} className="px-3 py-1.5 text-xs font-bold text-gray-600 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">Analytics</button>
+            <button onClick={() => navigate('/catalog')} className="px-3 py-1.5 text-xs font-bold text-gray-600 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">Catalog</button>
+            <button onClick={() => navigate('/pathways')} className="px-3 py-1.5 text-xs font-bold text-gray-600 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">Pathways</button>
+            <button onClick={() => navigate('/assistant')} className="px-3 py-1.5 text-xs font-bold text-gray-600 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">AI Assistant</button>
+            <button onClick={() => navigate('/virtual-lab')} className="px-3 py-1.5 text-xs font-bold text-gray-600 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">Virtual Lab</button>
+            <button onClick={() => navigate('/content-studio')} className="px-3 py-1.5 text-xs font-bold text-gray-600 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">Studio</button>
+            <button onClick={() => navigate('/edge')} className="px-3 py-1.5 text-xs font-bold text-gray-600 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors">Edge Sync</button>
+          </nav>
+
           <button
             onClick={() => navigate('/progress')}
-            className="header-sync-btn clay-btn bg-white text-structural"
-            title="My Progress"
+            className="header-sync-btn clay-btn bg-cobalt text-white hidden md:flex"
+            title="Legacy Progress"
           >
-            <span className="header-sync-label font-bold tracking-wide">My Progress</span>
+            <span className="header-sync-label font-bold tracking-wide">Legacy Mode</span>
           </button>
 
           <button

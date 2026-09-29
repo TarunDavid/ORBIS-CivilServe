@@ -24,6 +24,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('api/ai/', include('ai_engine.urls')),
+    # ORBIS Competency Platform
+    path('api/core/', include('core.urls')),
+    path('api/catalog/', include('catalog.urls')),
+    path('api/pathways/', include('pathways.urls')),
+    path('api/content/', include('content.urls')),
+    path('api/assistant/', include('assistant.urls')),
+    path('api/analytics/', include('analytics.urls')),
+    path('api/virtual_lab/', include('virtual_lab.urls')),
+    path('api/edge/', include('edge.urls')),
 ]
 
 from django.urls import re_path

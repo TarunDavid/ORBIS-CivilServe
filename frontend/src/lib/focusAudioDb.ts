@@ -37,7 +37,7 @@ class FocusAudioDB {
   async open(): Promise<void> {
     if (this.db || this.openFailed) return;
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       try {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
 

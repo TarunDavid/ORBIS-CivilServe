@@ -50,7 +50,7 @@ const ChapterContent = () => {
   } catch {
     // Corrupted localStorage — proceed without student info
   }
-  const { playAlert, playFullscreenAlert, stopAudio } = useFocusAudioAlert(
+  const { playFullscreenAlert, stopAudio } = useFocusAudioAlert(
     currentStudent?.id ?? null,
     currentStudent?.name ?? 'Student',
   );
@@ -221,11 +221,11 @@ const ChapterContent = () => {
   return (
     <div ref={chapterContainerRef} className="min-h-screen w-full overflow-y-auto bg-canvas text-[#121316] font-jakarta pb-16">
       <div className="max-w-6xl mx-auto p-4 md:p-6 lg:p-8">
-        
+
         {/* Top bar */}
         <div className="flex items-center justify-between mb-6">
           {!isLocked ? (
-            <button 
+            <button
               onClick={() => navigate(-1)}
               className="clay-btn bg-white text-[#121316] hover:bg-canvas px-4 py-2 text-sm flex items-center gap-2"
             >
@@ -259,15 +259,15 @@ const ChapterContent = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Main Content Area */}
           <div className="space-y-8 lg:col-span-2">
-            
+
             {/* Video Player Section */}
             <div className="clay-card-lg bg-white overflow-hidden relative">
-              
+
               {focusModeActive && (
-                <AttentionTracker 
+                <AttentionTracker
                   isActive={focusModeActive}
                   onDistracted={() => {
                     if (!isDistracted) {
@@ -286,7 +286,7 @@ const ChapterContent = () => {
                     focusAlarm.stop();
                     stopAudio();
                     if (mainVideoRef.current && mainVideoRef.current.paused) {
-                      mainVideoRef.current.play().catch(() => {});
+                      mainVideoRef.current.play().catch(() => { });
                     }
                   }}
                 />
@@ -299,13 +299,13 @@ const ChapterContent = () => {
                   </div>
                   <h2 className="text-3xl font-syne font-extrabold text-gold">Are you still there?</h2>
                   <p className="text-stone-300 font-jakarta max-w-sm">We noticed you looked away for a while. Let's stay focused on the lesson!</p>
-                  <button 
+                  <button
                     onClick={() => {
                       setIsDistracted(false);
                       focusAlarm.stop();
                       stopAudio();
                       if (mainVideoRef.current) {
-                        mainVideoRef.current.play().catch(() => {});
+                        mainVideoRef.current.play().catch(() => { });
                       }
                     }}
                     className="clay-btn bg-gold text-[#121316] px-6 py-3 font-grotesk font-bold text-sm tracking-wide"
@@ -317,10 +317,10 @@ const ChapterContent = () => {
 
               <div className="aspect-video bg-[#121316] relative border-b-[3px] border-[#121316]">
                 {videoResource ? (
-                  <video 
+                  <video
                     ref={mainVideoRef}
                     src={getMediaUrl(videoResource.file_path)}
-                    controls 
+                    controls
                     preload="metadata"
                     className="w-full h-full object-contain"
                     onPlay={() => setIsDistracted(false)}
@@ -335,7 +335,7 @@ const ChapterContent = () => {
                   </div>
                 )}
               </div>
-              
+
               <div className="p-6 md:p-8 space-y-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
@@ -349,11 +349,10 @@ const ChapterContent = () => {
                   <div className="flex items-center gap-2 flex-wrap">
                     <button
                       onClick={() => setFocusModeActive(!focusModeActive)}
-                      className={`clay-btn px-4 py-2.5 flex items-center gap-2 text-sm font-grotesk transition-all ${
-                        focusModeActive 
-                          ? 'bg-cobalt text-white' 
+                      className={`clay-btn px-4 py-2.5 flex items-center gap-2 text-sm font-grotesk transition-all ${focusModeActive
+                          ? 'bg-cobalt text-white'
                           : 'bg-canvas text-[#121316] hover:bg-white'
-                      }`}
+                        }`}
                     >
                       <Eye size={18} />
                       <span>{focusModeActive ? 'Focus Mode ON' : 'Enable Focus Mode'}</span>
@@ -383,7 +382,7 @@ const ChapterContent = () => {
                         }}
                         onResumeVideo={() => {
                           if (mainVideoRef.current) {
-                            mainVideoRef.current.play().catch(() => {});
+                            mainVideoRef.current.play().catch(() => { });
                           }
                         }}
                         onSessionEnd={() => {
@@ -400,7 +399,7 @@ const ChapterContent = () => {
 
                 {/* Tactical Action Buttons Row */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                  <button 
+                  <button
                     onClick={handleSummarize}
                     disabled={isSummarizing}
                     className="clay-btn py-3 px-4 bg-gold text-[#121316] font-grotesk font-bold flex items-center justify-center gap-2 text-sm"
@@ -408,26 +407,24 @@ const ChapterContent = () => {
                     <Sparkles size={18} />
                     <span>{isSummarizing ? 'Summarizing...' : 'Summarize Video'}</span>
                   </button>
-                  
-                  <button 
+
+                  <button
                     onClick={() => setShowChatbot(!showChatbot)}
-                    className={`clay-btn py-3 px-4 font-grotesk font-bold flex items-center justify-center gap-2 text-sm transition-all ${
-                      showChatbot 
-                        ? 'bg-lilac text-[#121316] ring-2 ring-[#121316]' 
+                    className={`clay-btn py-3 px-4 font-grotesk font-bold flex items-center justify-center gap-2 text-sm transition-all ${showChatbot
+                        ? 'bg-lilac text-[#121316] ring-2 ring-[#121316]'
                         : 'bg-canvas hover:bg-lilac text-[#121316]'
-                    }`}
+                      }`}
                   >
                     <MessageCircle size={18} />
                     <span>AI Chatbot</span>
                   </button>
-                  
-                  <button 
+
+                  <button
                     onClick={handleVoiceAssistantToggle}
-                    className={`clay-btn py-3 px-4 font-grotesk font-bold flex items-center justify-center gap-2 text-sm ${
-                      isRecording
+                    className={`clay-btn py-3 px-4 font-grotesk font-bold flex items-center justify-center gap-2 text-sm ${isRecording
                         ? 'bg-coral text-white animate-pulse'
                         : 'bg-canvas hover:bg-coral hover:text-white text-[#121316]'
-                    }`}
+                      }`}
                   >
                     <Mic size={18} />
                     <span>{isRecording ? 'Stop Recording' : voiceProcessing ? 'Processing...' : 'Voice Assistant'}</span>
@@ -481,8 +478,8 @@ const ChapterContent = () => {
             {/* Chatbot UI */}
             {showChatbot && (
               <div className="pt-2">
-                <AIChatbot 
-                  chapterId={chapterId!} 
+                <AIChatbot
+                  chapterId={chapterId!}
                   chapterTitle={chapter?.title}
                   subjectIdentifier={chapter?.subject_identifier}
                   subjectName={chapter?.subject_name}
@@ -494,17 +491,17 @@ const ChapterContent = () => {
 
           {/* Sidebar / Resources */}
           <div className="lg:col-span-1 space-y-6">
-            
+
             {/* Chapter Resources Box */}
             <div className="clay-card bg-white p-6 space-y-4">
               <div className="flex items-center justify-between pb-2 border-b-2 border-stone-200">
                 <h3 className="font-syne font-extrabold text-xl text-[#121316]">Resources</h3>
                 <span className="clay-chip bg-canvas text-[#121316] px-2 py-0.5 text-[10px]">OFFLINE FILES</span>
               </div>
-              
+
               <div className="space-y-3">
                 {notesResource ? (
-                  <button 
+                  <button
                     onClick={() => setViewingPdf({ title: 'Chapter Notes', url: getMediaUrl(notesResource.file_path) })}
                     className="clay-card-sm bg-canvas hover:bg-white p-4 flex items-center gap-4 transition-transform hover:-translate-y-0.5 group w-full text-left cursor-pointer"
                   >
@@ -524,10 +521,10 @@ const ChapterContent = () => {
                 )}
 
                 {pptResource ? (
-                  <a 
-                    href={getMediaUrl(pptResource.file_path)} 
-                    target="_blank" 
-                    rel="noreferrer" 
+                  <a
+                    href={getMediaUrl(pptResource.file_path)}
+                    target="_blank"
+                    rel="noreferrer"
                     download
                     className="clay-card-sm bg-canvas hover:bg-white p-4 flex items-center gap-4 transition-transform hover:-translate-y-0.5 group block"
                   >
@@ -547,7 +544,7 @@ const ChapterContent = () => {
                 )}
 
                 {textbookResource ? (
-                  <button 
+                  <button
                     onClick={() => setViewingPdf({ title: 'Textbook Excerpt', url: getMediaUrl(textbookResource.file_path) })}
                     className="clay-card-sm bg-canvas hover:bg-white p-4 flex items-center gap-4 transition-transform hover:-translate-y-0.5 group w-full text-left cursor-pointer"
                   >
@@ -567,7 +564,7 @@ const ChapterContent = () => {
                 )}
               </div>
             </div>
-            
+
             {/* Practice Section — Neo-Clay Gold Punch Card */}
             <div className="clay-card bg-gold p-6 text-[#121316] relative overflow-hidden">
               <div className="flex items-center justify-between mb-3">
@@ -576,12 +573,12 @@ const ChapterContent = () => {
                 </span>
                 <span className="text-xl">⚡</span>
               </div>
-              
+
               <h3 className="font-syne font-extrabold text-2xl text-[#121316] mb-1">Practice Time!</h3>
               <p className="font-jakarta text-sm text-[#121316]/80 mb-5 font-medium">
                 Test your mastery with AI flashcards or a quick chapter quiz.
               </p>
-              
+
               <div className="space-y-3">
                 <button
                   onClick={() => navigate(`/chapters/${chapterId}/flashcards`)}
@@ -616,7 +613,7 @@ const ChapterContent = () => {
 
       {/* In-App PDF Reader Modal — Keeps student in fullscreen without leaving the app */}
       {viewingPdf && (
-        <div 
+        <div
           className="fixed inset-0 z-[9995] bg-[#121316]/85 backdrop-blur-md flex flex-col p-2 md:p-6 animate-fade-in"
           onClick={(e) => e.stopPropagation()}
         >
