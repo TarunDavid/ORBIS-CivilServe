@@ -18,8 +18,13 @@ import ContentUpload from './pages/teacher/ContentUpload';
 import ContentList from './pages/teacher/ContentList';
 import TeacherActivity from './pages/teacher/TeacherActivity';
 
+// ORBIS MEASURE — Auth & Dashboard (Dev A)
+import LoginPage from './features/auth/LoginPage';
+import OfficialDashboard from './features/measure/OfficialDashboard';
+import ProtectedRoute from './features/auth/ProtectedRoute';
+
 /** Pages where the global header should NOT appear */
-const NO_HEADER_PATHS = ['/', '/register', '/teacher'];
+const NO_HEADER_PATHS = ['/', '/register', '/teacher', '/auth/login'];
 
 /** Teacher portal paths (use TeacherHeader, not student Header) */
 const TEACHER_PATHS = ['/teacher/'];
@@ -27,14 +32,19 @@ const TEACHER_PATHS = ['/teacher/'];
 function AppLayout() {
   const location = useLocation();
   const isTeacherPath = location.pathname.startsWith('/teacher');
-  const showHeader = !isTeacherPath && !NO_HEADER_PATHS.includes(location.pathname);
+  const isAuthPath = location.pathname.startsWith('/auth');
+  const isMeasurePath = location.pathname.startsWith('/measure');
+  const showHeader = !isTeacherPath && !isAuthPath && !isMeasurePath && !NO_HEADER_PATHS.includes(location.pathname);
 
   return (
     <div className="min-h-screen bg-canvas font-jakarta">
       {showHeader && <Header />}
       <Routes>
-        {/* Student Routes */}
-        <Route path="/" element={<SelectProfile />} />
+        {/* Dev A: New Competency Intelligence Entry Point */}
+        <Route path="/" element={<Navigate to="/auth/login" replace />} />
+        
+        {/* Legacy Student Routes (Dev B) */}
+        <Route path="/student" element={<SelectProfile />} />
         <Route path="/register" element={<Registration />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/subjects/:subjectId/chapters" element={<ChapterList />} />
@@ -51,6 +61,17 @@ function AppLayout() {
         <Route path="/teacher/content/upload" element={<ContentUpload />} />
         <Route path="/teacher/content" element={<ContentList />} />
         <Route path="/teacher/activity" element={<TeacherActivity />} />
+
+        {/* ORBIS MEASURE — Auth & Dashboard (Dev A) */}
+        <Route path="/auth/login" element={<LoginPage />} />
+        <Route 
+          path="/measure/dashboard" 
+          element={
+            <ProtectedRoute>
+              <OfficialDashboard />
+            </ProtectedRoute>
+          } 
+        />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

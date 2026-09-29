@@ -24,6 +24,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('api/ai/', include('ai_engine.urls')),
+    # Dev A (MEASURE side) endpoints
+    path('api/me', include([
+        path('', __import__('apps.accounts.views', fromlist=['me_view']).me_view, name='api-me'),
+    ])),
+    path('api/accounts/', include('apps.accounts.urls')),
 ]
 
 from django.urls import re_path

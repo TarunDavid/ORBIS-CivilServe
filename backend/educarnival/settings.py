@@ -39,9 +39,18 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "api",
     "ai_engine",
+    # Dev A apps (MEASURE side)
+    "apps.accounts",
+    "apps.competency",
+    "apps.profiles",
+    "apps.assessments",
+    "apps.labs",
+    "apps.evidence",
 ]
 
 MIDDLEWARE = [
@@ -80,8 +89,20 @@ class CsrfExemptSessionAuthentication:
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'educarnival.settings.CsrfExemptSessionAuthentication',
     ),
+}
+
+# JWT Configuration (Dev A — accounts app)
+# JWT Configuration
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 ROOT_URLCONF = "educarnival.urls"
