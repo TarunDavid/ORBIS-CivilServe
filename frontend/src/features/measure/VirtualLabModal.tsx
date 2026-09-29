@@ -4,23 +4,31 @@ import type { RoleRequirement } from './competencyApi';
 import { fetchLabsForCompetency, createLabSession, submitLabSession, type CompetencyLab, type LabSession } from './labsApi';
 
 interface Props {
-  requirement: RoleRequirement;
+  requirement?: RoleRequirement | null;
+  initialLab?: CompetencyLab | null;
   onClose: () => void;
   onComplete: () => void;
 }
 
-export default function VirtualLabModal({ requirement, onClose, onComplete }: Props) {
+export default function VirtualLabModal({ requirement, initialLab, onClose, onComplete }: Props) {
   const [labs, setLabs] = useState<CompetencyLab[]>([]);
-  const [activeLab, setActiveLab] = useState<CompetencyLab | null>(null);
+  const [activeLab, setActiveLab] = useState<CompetencyLab | null>(initialLab || null);
   const [session, setSession] = useState<LabSession | null>(null);
   const [userInput, setUserInput] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialLab);
   const [evaluating, setEvaluating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function init() {
+      if (initialLab) {
+        setActiveLab(initialLab);
+        setLoading(false);
+        return;
+      }
+      if (!requirement?.competency?.id) return;
       try {
+        setLoading(true);
         const fetchedLabs = await fetchLabsForCompetency(requirement.competency.id);
         setLabs(fetchedLabs);
         if (fetchedLabs.length > 0) {
@@ -33,7 +41,7 @@ export default function VirtualLabModal({ requirement, onClose, onComplete }: Pr
       }
     }
     init();
-  }, [requirement.competency.id]);
+  }, [requirement?.competency?.id, initialLab]);
 
   const handleStartLab = async () => {
     if (!activeLab) return;
@@ -83,7 +91,7 @@ export default function VirtualLabModal({ requirement, onClose, onComplete }: Pr
               VIRTUAL LAB
             </span>
             <h2 className="font-syne text-2xl font-bold flex items-center gap-2">
-              {activeLab?.title || `Lab: ${requirement.competency.name}`}
+              {activeLab?.title || (requirement ? `Lab: ${requirement.competency.name}` : 'Virtual Lab')}
             </h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors">
@@ -109,7 +117,7 @@ export default function VirtualLabModal({ requirement, onClose, onComplete }: Pr
               </div>
             ) : (
               <div className="text-on-surface-variant italic">
-                No active labs configured for {requirement.competency.name}. <br/><br/>
+                No active labs configured for {requirement?.competency?.name || 'this selection'}. <br/><br/>
                 Please ask the admin to create a CompetencyLab for this competency!
               </div>
             )}

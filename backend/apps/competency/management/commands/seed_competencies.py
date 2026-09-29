@@ -54,32 +54,49 @@ class Command(BaseCommand):
             )
             comps[code] = comp
 
-        # 3. Get or Create Demo JobRole
-        self.stdout.write("Creating/fetching Demo Job Role...")
-        job_role, _ = JobRole.objects.get_or_create(
-            title="Senior Statistical Officer",
-            defaults={"code": "SSO", "level": "senior"}
-        )
-
-        # 4. Map Role Requirements
+        # 3. Map Role Requirements across Job Roles
         self.stdout.write("Mapping Role Requirements...")
-        requirements = [
-            (comps["STAT-SD"], 4, 1.5),
-            (comps["STAT-DQ"], 4, 1.5),
-            (comps["TECH-PY"], 3, 1.0),
-            (comps["TECH-SQL"], 3, 1.0),
-            (comps["BEHAV-LEAD"], 3, 1.2),
-            (comps["BEHAV-DEC"], 4, 1.2),
-        ]
+        requirements_map = {
+            "SO": [
+                (comps["TECH-PY"], 3, 1.0),
+                (comps["TECH-SQL"], 3, 1.0),
+                (comps["STAT-SD"], 4, 1.5),
+                (comps["STAT-DQ"], 3, 1.2),
+                (comps["BEHAV-DEC"], 3, 1.0),
+            ],
+            "SSO": [
+                (comps["STAT-SD"], 4, 1.5),
+                (comps["STAT-DQ"], 4, 1.5),
+                (comps["TECH-PY"], 4, 1.2),
+                (comps["TECH-SQL"], 4, 1.2),
+                (comps["BEHAV-LEAD"], 3, 1.2),
+                (comps["BEHAV-DEC"], 4, 1.2),
+            ],
+            "DSO": [
+                (comps["STAT-SD"], 4, 1.5),
+                (comps["STAT-SAMP"], 4, 1.5),
+                (comps["TECH-SQL"], 3, 1.0),
+                (comps["BEHAV-DEC"], 3, 1.0),
+            ],
+            "JSA": [
+                (comps["TECH-PY"], 2, 1.0),
+                (comps["TECH-SQL"], 2, 1.0),
+                (comps["STAT-DQ"], 2, 1.0),
+            ]
+        }
 
-        for comp, target, weight in requirements:
-            RoleRequirement.objects.get_or_create(
-                job_role=job_role,
-                competency=comp,
-                defaults={
-                    "target_proficiency": target,
-                    "weight": weight
-                }
-            )
+        for role_code, reqs in requirements_map.items():
+            job_role = JobRole.objects.filter(code=role_code).first()
+            if not job_role:
+                job_role = JobRole.objects.create(code=role_code, title=f"Job Role {role_code}", level="mid")
+            for comp, target, weight in reqs:
+                RoleRequirement.objects.get_or_create(
+                    job_role=job_role,
+                    competency=comp,
+                    defaults={
+                        "target_proficiency": target,
+                        "weight": weight
+                    }
+                )
 
         self.stdout.write(self.style.SUCCESS('Successfully seeded competency data.'))

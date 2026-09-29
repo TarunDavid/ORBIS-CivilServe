@@ -10,9 +10,15 @@ from .evaluator import evaluate_lab_submission
 from apps.evidence.services import record_evidence
 
 class CompetencyLabViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = CompetencyLab.objects.filter(is_active=True)
     serializer_class = CompetencyLabSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        qs = CompetencyLab.objects.filter(is_active=True)
+        comp_id = self.request.query_params.get('competency')
+        if comp_id:
+            qs = qs.filter(competency_id=comp_id)
+        return qs
 
 
 class LabSessionViewSet(viewsets.ModelViewSet):

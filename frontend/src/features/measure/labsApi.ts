@@ -7,6 +7,7 @@ export interface CompetencyLab {
   title: string;
   description: string;
   environment_type: string;
+  is_active?: boolean;
 }
 
 export interface LabSession {
@@ -18,6 +19,11 @@ export interface LabSession {
   status: string;
 }
 
+export async function fetchAllLabs(): Promise<CompetencyLab[]> {
+  const resp = await authApi.get<CompetencyLab[]>('labs/catalogs/');
+  return resp.data;
+}
+
 export async function fetchLabsForCompetency(competencyId: string): Promise<CompetencyLab[]> {
   const resp = await authApi.get<CompetencyLab[]>(`labs/catalogs/?competency=${competencyId}`);
   return resp.data;
@@ -25,16 +31,14 @@ export async function fetchLabsForCompetency(competencyId: string): Promise<Comp
 
 export async function createLabSession(labId: string): Promise<LabSession> {
   const resp = await authApi.post<LabSession>('labs/sessions/', {
-    lab_id: labId, // The serializer might not accept lab_id directly like this if it's nested or read_only. Let's send it.
-    // Wait, by default DRF ModelViewSet expects `lab` as the foreign key field if we didn't specify `lab_id`. Let's pass `lab`.
-    lab: labId
+    lab_id: labId,
   });
   return resp.data;
 }
 
 export async function submitLabSession(sessionId: string, userInput: string): Promise<LabSession> {
   const resp = await authApi.post<LabSession>(`labs/sessions/${sessionId}/submit/`, {
-    user_input: userInput
+    user_input: userInput,
   });
   return resp.data;
 }
