@@ -115,10 +115,10 @@ export default function CompetencyCardModal({ onClose, isStandalonePage = false 
           <div className="flex items-center gap-2 print:hidden self-end md:self-auto">
             <button
               onClick={handlePrint}
-              className="clay-btn bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 text-xs flex items-center gap-1.5 border border-white/10 rounded-lg cursor-pointer transition-colors"
-              title="Print official skill passport"
+              className="clay-btn bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 text-xs flex items-center gap-1.5 border border-white/10 rounded-lg cursor-pointer transition-colors shadow-sm"
+              title="Print or save as official PDF credential"
             >
-              <Printer size={15} /> Print / Export
+              <Printer size={15} /> Print / Save as PDF
             </button>
             <button
               onClick={handleCopyLink}
@@ -278,6 +278,22 @@ export default function CompetencyCardModal({ onClose, isStandalonePage = false 
                         style={{ width: `${(comp.current_proficiency / 5) * 100}%` }}
                       ></div>
                     </div>
+
+                    {!isMet && (
+                      <div className="mt-2.5 pt-2 border-t border-structural/10 flex items-center justify-between text-xs">
+                        <span className="text-on-surface-variant text-[11px] font-mono">
+                          Needs +{comp.gap} level{comp.gap > 1 ? 's' : ''} to meet role target
+                        </span>
+                        <a
+                          href={`/pathways?competency=${encodeURIComponent(comp.name)}`}
+                          className="inline-flex items-center gap-1 text-[11px] font-bold text-cobalt hover:text-cobalt-dark hover:underline transition-colors"
+                          title={`Explore recommended learning pathways for ${comp.name}`}
+                        >
+                          <span>Bridge Gap via iGOT Pathways</span>
+                          <ExternalLink size={11} />
+                        </a>
+                      </div>
+                    )}
                   </div>
                 );
               })}

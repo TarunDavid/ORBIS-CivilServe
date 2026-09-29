@@ -15,7 +15,9 @@ import {
   Code2,
   Database,
   FileText,
-  Award
+  Award,
+  BookOpen,
+  ExternalLink
 } from 'lucide-react';
 import VirtualLabModal from './VirtualLabModal';
 import CompetencyCardModal from './CompetencyCardModal';
@@ -271,13 +273,26 @@ export default function OfficialDashboard() {
                             Target: L{req.target_proficiency}/5
                           </span>
                         </div>
-                        <button
-                          onClick={() => handleSimulateLab(req)}
-                          className="text-xs bg-cobalt hover:bg-cobalt-dark text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow hover:shadow-md transition-all active:scale-95 cursor-pointer"
-                        >
-                          <Play size={12} className="fill-white" />
-                          Launch Lab
-                        </button>
+                        <div className="flex items-center gap-2">
+                          {req.target_proficiency > req.current_proficiency && (
+                            <a
+                              href={`/pathways?competency=${encodeURIComponent(req.competency.name)}`}
+                              className="text-xs bg-mint/15 hover:bg-mint/30 text-mint-dark font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 border border-mint/40 transition-all cursor-pointer shadow-sm"
+                              title={`Bridge Gap: Explore learning pathways for ${req.competency.name}`}
+                            >
+                              <BookOpen size={12} />
+                              <span className="hidden sm:inline">Pathways</span>
+                              <ExternalLink size={10} />
+                            </a>
+                          )}
+                          <button
+                            onClick={() => handleSimulateLab(req)}
+                            className="text-xs bg-cobalt hover:bg-cobalt-dark text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow hover:shadow-md transition-all active:scale-95 cursor-pointer"
+                          >
+                            <Play size={12} className="fill-white" />
+                            Launch Lab
+                          </button>
+                        </div>
                       </div>
                     </div>
                     

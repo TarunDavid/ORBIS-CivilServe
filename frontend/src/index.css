@@ -957,3 +957,38 @@ h1, h2, h3, h4, h5, h6 {
     transform: scale(1) translateY(0);
   }
 }
+
+/* ============================================
+   Print Styles for Official Competency Card
+   ============================================ */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Hide navigation, buttons, and close controls */
+  header, nav, .print\:hidden {
+    display: none !important;
+  }
+
+  /* Reset heavy box shadows for crisp paper/PDF output */
+  .clay-card, .clay-card-lg, .clay-card-sm, .shadow-2xl, .shadow-xl, .shadow-lg {
+    box-shadow: none !important;
+  }
+
+  .print\:border-none {
+    border: none !important;
+  }
+
+  .print\:max-w-none {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Prevent unwanted page break inside matrix cards */
+  .grid, table, tr {
+    break-inside: avoid;
+  }
+}
+
