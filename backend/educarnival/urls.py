@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/accounts/', include('apps.accounts.urls')),
     path('api/competency/', include('apps.competency.urls')),
     path('api/evidence/', include('apps.evidence.urls')),
+    path('api/labs/', include('apps.labs.urls')),
     
     # ORBIS Competency Platform
     path('api/core/', include('core.urls')),

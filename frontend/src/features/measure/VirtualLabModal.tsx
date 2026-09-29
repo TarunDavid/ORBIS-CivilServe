@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Play, Loader2, CheckCircle2 } from 'lucide-react';
-import { RoleRequirement } from './competencyApi';
-import { fetchLabsForCompetency, createLabSession, submitLabSession, CompetencyLab, LabSession } from './labsApi';
+import type { RoleRequirement } from './competencyApi';
+import { fetchLabsForCompetency, createLabSession, submitLabSession, type CompetencyLab, type LabSession } from './labsApi';
 
 interface Props {
   requirement: RoleRequirement;

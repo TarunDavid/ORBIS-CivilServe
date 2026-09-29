@@ -2,7 +2,7 @@
  * ORBIS Auth — React hook for authentication state.
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import {
   loginWithCredentials,
   loginWithSSO,

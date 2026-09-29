@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import { fetchMyCompetencyRequirements, type RoleRequirement } from './competencyApi';
-import { submitEvidence } from './evidenceApi';
 import { LogOut, BarChart3, UserCircle, Briefcase, AlertCircle, TrendingUp, Play } from 'lucide-react';
+import VirtualLabModal from './VirtualLabModal';
 
 export default function OfficialDashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [requirements, setRequirements] = useState<RoleRequirement[]>([]);
   const [loading, setLoading] = useState(true);
-  const [simulating, setSimulating] = useState<string | null>(null);
+  const [activeLabReq, setActiveLabReq] = useState<RoleRequirement | null>(null);
 
   async function loadData() {
     try {
@@ -33,22 +33,8 @@ export default function OfficialDashboard() {
     navigate('/auth/login');
   };
 
-  const handleSimulateLab = async (req: RoleRequirement) => {
-    try {
-      setSimulating(req.id);
-      await submitEvidence({
-        competency_id: req.competency.id,
-        source_type: 'competency_lab',
-        source_reference: 'demo-lab-001',
-        score_raw: Math.floor(Math.random() * 40) + 60, // 60-100 random score
-        explanation: 'Simulated lab execution via Dashboard'
-      });
-      await loadData();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSimulating(null);
-    }
+  const handleSimulateLab = (req: RoleRequirement) => {
+    setActiveLabReq(req);
   };
 
   const criticalGaps = requirements.filter(r => (r.target_proficiency - r.current_proficiency) > 2);
@@ -150,8 +136,7 @@ export default function OfficialDashboard() {
                       <div className="text-right flex items-center gap-4">
                         <button
                           onClick={() => handleSimulateLab(req)}
-                          disabled={simulating === req.id}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-cobalt text-white px-2 py-1 rounded flex items-center gap-1 disabled:opacity-50"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-cobalt text-white px-2 py-1 rounded flex items-center gap-1"
                         >
                           <Play size={12} />
                           Simulate Lab
@@ -196,6 +181,16 @@ export default function OfficialDashboard() {
         </div>
 
       </div>
+      
+      {activeLabReq && (
+        <VirtualLabModal 
+          requirement={activeLabReq} 
+          onClose={() => setActiveLabReq(null)}
+          onComplete={() => {
+            loadData();
+          }}
+        />
+      )}
     </div>
   );
 }

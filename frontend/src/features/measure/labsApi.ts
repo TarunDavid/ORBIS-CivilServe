@@ -1,5 +1,5 @@
 import authApi from '../auth/authApi';
-import { Competency } from './competencyApi';
+import type { Competency } from './competencyApi';
 
 export interface CompetencyLab {
   id: string;
